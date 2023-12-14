@@ -1,43 +1,53 @@
-import React, {useState,useCallback} from "react";
-import { Text, StyleSheet, View, TextInput, FlatList, Image, Animated, TouchableOpacity, useAnimatedValue, TouchableWithoutFeedback, ActivityIndicator } from "react-native";
+import React, {useState,useCallback, useEffect} from "react";
+import { Text, StyleSheet, View, TextInput, FlatList, Image, Animated, TouchableOpacity, useAnimatedValue, TouchableWithoutFeedback, ActivityIndicator, ScrollView } from "react-native";
 import { SearchNormal, Candle2, Wallet, ProfileCircle, Setting, Home3, Add } from "iconsax-react-native";
 import { fontType, colors } from "../../../src/theme";
 import { Categories, Newproduct } from "../../components";
 import { Navbar } from "../../components"
 import { categoriesdata, newproductdata } from "../../../data";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
-import axios from 'axios';
+import firestore from '@react-native-firebase/firestore';
 
 export default function Home() {
   const navigation = useNavigation();
   const [loading, setLoading] = useState(true);
   const [productData, setProductData] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
-  const getDataProduct = async () => {
-    try {
-      const response = await axios.get(
-        'https://657a6bf11acd268f9afafe9f.mockapi.io/raksi/product',
-      );
-      setProductData(response.data);
-      setLoading(false)
-    } catch (error) {
-        console.error(error);
-    }
-  };
+  useEffect(() => {
+    const subscriber = firestore()
+      .collection('Product')
+      .onSnapshot(querySnapshot => {
+        const products = [];
+        querySnapshot.forEach(documentSnapshot => {
+          products.push({
+            ...documentSnapshot.data(),
+            id: documentSnapshot.id,
+          });
+        });
+        setProductData(products);
+        setLoading(false);
+      });
+    return () => subscriber();
+  }, []);
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
     setTimeout(() => {
-      getDataProduct()
-      setRefreshing(false);
-    }, 1500);
-  }, []);
-
-  useFocusEffect(
-    useCallback(() => {
-      getDataProduct();
-    }, [])
-  );
+      firestore()
+      .collection('Product')
+      .onSnapshot(querySnapshot => {
+        const products = [];
+        querySnapshot.forEach(documentSnapshot => {
+          products.push({
+            ...documentSnapshot.data(),
+            id: documentSnapshot.id,
+          });
+        });
+        setProductData(products);
+      });
+    setRefreshing(false);
+  }, 1500);
+}, []);
 
   return (
     <View style={styles.container}>
@@ -66,11 +76,13 @@ export default function Home() {
         <Text style={styles.heading}>New Product</Text>
         <Text style={styles.subheading}>See More</Text>
       </View>
+      <ScrollView>
       {loading ? (
             <ActivityIndicator size={'large'} color={colors.blue()} />
           ) : (
             productData.map((data, index) => <Newproduct data={data} key={index} />)
           )}
+      </ScrollView>
     </View >
   );
 }

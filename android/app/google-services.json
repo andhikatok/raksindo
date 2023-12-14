@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "818807288444",
+    "project_id": "raksindo-f83de",
+    "storage_bucket": "raksindo-f83de.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:818807288444:android:b73ba97770c23ad3820ff9",
+        "android_client_info": {
+          "package_name": "com.raksindo"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD1KxUNJwdJYj7yFmEZEqxvVw-0UoGb_7E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
