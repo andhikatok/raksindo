@@ -1,11 +1,13 @@
 import React, {useRef} from "react";
-import { ScrollView, Text, StyleSheet, Image, View, FlatList, Animated } from "react-native";
+import { ScrollView, Text, StyleSheet, Image, View, Animated, TouchableOpacity } from "react-native";
 import { Setting, Personalcard, Call, Sms, Map1, Logout, Information } from "iconsax-react-native";
 import { fontType, colors } from "../../theme";
 import { Navbar } from "../../components"
 import { useNavigation } from "@react-navigation/native";
+import auth from '@react-native-firebase/auth';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-export default function Profiles() {
+export default function Profile() {
   const scrollY = useRef(new Animated.Value(0)).current;
   const translateY = scrollY.interpolate({
     inputRange: [0,100],
@@ -13,6 +15,12 @@ export default function Profiles() {
     extrapolate: 'clamp',
   })
 
+  const navigation = useNavigation();
+  const handleLogout = async () => {
+    await auth ().signOut();
+    await AsyncStorage.removeItem('userData');
+    navigation.replace('Login');
+  }
   return (
     <View style={styles.container}>
       <View>
@@ -31,7 +39,7 @@ export default function Profiles() {
       style={styles.header}
       onScroll={Animated.event(
         [{ nativeEvent: { contentOffset: { y: scrollY } } }],
-        { useNativeDriver: false } // Animated.event tidak bekerja dengan useNativeDriver true pada ScrollView
+        { useNativeDriver: false }
       )}
       scrollEventThrottle={16}
     >
@@ -63,7 +71,7 @@ export default function Profiles() {
               <Text style={{ textAlign: "center", textAlignVertical: "center", fontSize: 19, color: 'black' }}> Location : Desa Rujuk</Text>
             </View>
           </View>
-          <Text style={fontFamily = fontType['Pjs-Bold']}>_____________________________________________________</Text>
+          <Text style={{fontFamily: fontType['Pjs-Bold']}}>_________________________________</Text>
           <View style={styles.containerprofil}>
             <Setting color={colors.black()} variant="Linear" size={30} />
             <View>
@@ -76,11 +84,13 @@ export default function Profiles() {
               <Text style={{ textAlign: "center", textAlignVertical: "center", fontSize: 19, color: 'black' }}> INFORMATION</Text>
             </View>
           </View>
-          <Text style={fontFamily = fontType['Pjs-Bold']}>_____________________________________________________</Text>
+          <Text style={{fontFamily: fontType['Pjs-Bold']}}>________________________________</Text>
           <View style={styles.containerprofil}>
             <Logout color={colors.black()} variant="Linear" size={30} />
             <View>
-              <Text style={{ textAlign: "center", textAlignVertical: "center", fontSize: 19, color: 'black' }}> LOG OUT</Text>
+              <TouchableOpacity  onPress={handleLogout} style={{ textAlign: "center", textAlignVertical: "center", fontSize: 19, color: 'black' }} >
+                <Text style={{ fontFamily: fontType['Pjs-Bold'] }}>Logout</Text>
+              </TouchableOpacity>
             </View>
           </View>
         </View>
@@ -215,42 +225,4 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     gap: 20,
   }
-});
-
-const category = StyleSheet.create({
-  title: {
-    fontFamily: fontType['Pjs-SemiBold'],
-    fontSize: 14,
-    lineHeight: 18,
-    color: colors.black(),
-  },
-  item: {
-    paddingHorizontal: 14,
-    paddingVertical: 10,
-    borderRadius: 20,
-    alignItems: 'center',
-    backgroundColor: colors.white(),
-    marginHorizontal: 5
-  },
-});
-const navbar = StyleSheet.create({
-  navButton: {
-    backgroundColor: colors.black(),
-    paddingHorizontal: 10,
-    justifyContent: 'center',
-    flexDirection: 'row',
-    alignItems: 'center',
-    height: 60,
-    elevation: 8,
-    paddingBottom: 4,
-  },
-  navIcon: {
-    alignItems: 'center',
-    paddingHorizontal: 45,
-  },
-  navText: {
-    fontFamily: fontType['Pjs-Bold'],
-    fontSize: 10,
-    color: colors.black(),
-  },
 });

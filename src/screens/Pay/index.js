@@ -60,7 +60,6 @@ export default function Pays() {
         <Animated.View style={{ transform: [{ translateY }], opacity }}>
           <Text style={styles.title}>TODAY TRANSACTION</Text>
         </Animated.View>
-
           <RenderTransaction />
       </ScrollView>
     </View>

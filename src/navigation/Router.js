@@ -1,11 +1,12 @@
 import React from 'react';
+import {createStackNavigator, TransitionPresets} from '@react-navigation/stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {Home, Pay, Profile, AddProduct, AddBlogForm} from '../screens';
+import {Home, Pay, Profile, AddBlogForm, SplashScreen,Login,Register} from '../screens';
 import { Wallet, ProfileCircle, Home3, Building, Chart } from "iconsax-react-native";
 import { fontType, colors } from "../theme";
-
+const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
-function Router() {
+function MainApp() {
   return (
     <Tab.Navigator
       screenOptions={{
@@ -86,4 +87,51 @@ function Router() {
     </Tab.Navigator>
   );
 }
+const Router = () => {
+  return (
+    <Stack.Navigator initialRouteName="SplashScreen">
+      <Stack.Screen
+        name="MainApp"
+        component={MainApp}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="Login"
+        component={Login}
+        options={{
+          headerShown: false, 
+          animationEnabled: true,
+          animationTypeForReplace: 'pop',
+          gestureEnabled: true,
+          gestureDirection : 'horizontal',
+          ...TransitionPresets.SlideFromRightIOS,
+        }}
+      />
+      <Stack.Screen
+        name="Register"
+        component={Register}
+        options={{
+          headerShown: false, 
+          animationEnabled: true,
+          animationTypeForReplace: 'pop',
+          gestureEnabled: true,
+          gestureDirection : 'horizontal',
+          ...TransitionPresets.SlideFromRightIOS,
+        }}
+      />
+      <Stack.Screen
+        name="SplashScreen"
+        component={SplashScreen}
+        options={{
+          headerShown: false, 
+          animationEnabled: true,
+          animationTypeForReplace: 'pop',
+          gestureEnabled: true,
+          gestureDirection : 'horizontal',
+          ...TransitionPresets.SlideFromRightIOS,
+        }}
+      />
+    </Stack.Navigator>
+  );
+};
 export default Router;
